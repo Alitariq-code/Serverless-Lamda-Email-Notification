@@ -1,0 +1,21 @@
+service: document-upload-email
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+        - ses:SendEmail
+      Resource: \"*\"
+
+functions:
+  processDocument:
+    handler: handler.processDocument
+    events:
+      - s3:
+          bucket: your-bucket-name
+          event: s3:ObjectCreated:Put
+          rules:
+            - suffix: .pdf
